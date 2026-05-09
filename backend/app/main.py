@@ -1,15 +1,11 @@
 from fastapi import FastAPI
-from .api.flight.routes import router as flight_router
+from app.api.flight.routes import router as flight_router
 
-app = FastAPI(title="Airline Operations API")
+app = FastAPI(title="Airline Operations - Flight Service")
 
-app.include_router(flight_router)
+app.include_router(flight_router, prefix="/flights", tags=["flights"])
 
-# Optional: add startup event to create tables
-from .core.database import engine
-from .api.flight.models import Base
-
-@app.on_event("startup")
-async def startup():
-    async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
+# Health check endpoint
+@app.get("/health")
+async def health_check():
+    return {"status": "ok"}

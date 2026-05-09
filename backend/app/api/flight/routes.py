@@ -1,29 +1,25 @@
 from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select
-from ..core.database import get_db
-from .models import Flight, FlightCreate, FlightOut, FlightCheckAvailability
-from .service import check_flight_availability
+from sqlalchemy.orm import Session
+from app.core.database import get_db
+from app.api.flight import models, service
 
-router = APIRouter(prefix="/flights", tags=["flights"])
+router = APIRouter()
 
-@router.post("/", response_model=FlightOut, status_code=status.HTTP_201_CREATED)
-async def create_flight(flight: FlightCreate, db: AsyncSession = Depends(get_db)):
-    db_flight = Flight(**flight.dict())
-    db.add(db_flight)
-    await db.commit()
-    await db.refresh(db_flight)
-    return db_flight
+@router.post("/", response_model=models.Flight, status_code=status.HTTP_201_CREATED)
+async def create_flight(flight: models.FlightCreate, db: Session = Depends(get_db)):
+    return service.create_flight(db, flight)
 
-@router.get("/{flight_id}", response_model=FlightOut)
-async def get_flight(flight_id: int, db: AsyncSession = Depends(get_db)):
-    result = await db.execute(select(Flight).where(Flight.id == flight_id))
-    flight = result.scalar_one_or_none()
+@router.get("/", response_model=list[models.Flight])
+async def list_flights(db: Session = Depends(get_db)):
+    return service.get_all_flights(db)
+
+@router.get("/{flight_id}", response_model=models.Flight)
+async def get_flight(flight_id: int, db: Session = Depends(get_db)):
+    flight = service.get_flight_by_id(db, flight_id)
     if not flight:
         raise HTTPException(status_code=404, detail="Flight not found")
     return flight
 
-@router.post("/availability", response_model=dict)
-async def check_availability(payload: FlightCheckAvailability, db: AsyncSession = Depends(get_db)):
-    available = await check_flight_availability(db, payload.flight_id, payload.seats_requested)
-    return {"available": available}
+@router.get("/availability/{flight_id}")
+async def check_availability(flight_id: int, db: Session = Depends(get_db)):
+    return service.is_flight_available(db, flight_id)

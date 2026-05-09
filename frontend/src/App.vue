@@ -1,17 +1,18 @@
-
 <template>
-  <router-view />
+  <div id="app">
+    <FlightList />
+  </div>
 </template>
 
-<script setup>
-// Root component
+<script setup lang="ts">
+import FlightList from './components/FlightList.vue';
 </script>
 
 <style>
-/* Global styles */
-body {
-  font-family: Arial, sans-serif;
-  margin: 0;
-  padding: 0;
+#app {
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  text-align: center;
+  color: #2c3e50;
+  margin-top: 60px;
 }
 </style>

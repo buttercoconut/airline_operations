@@ -1,10 +1,11 @@
-import os
-from pathlib import Path
-from dotenv import load_dotenv
+from pydantic import BaseSettings
 
-load_dotenv()
+class Settings(BaseSettings):
+    database_url: str = "postgresql://postgres:postgres@localhost:5432/airline_db"
+    redis_url: str = "redis://localhost:6379"
 
-DATABASE_URL = os.getenv("DATABASE_URL", "postgresql+asyncpg://postgres:postgres@localhost:5432/airline_db")
-REDIS_URL = os.getenv("REDIS_URL", "redis://localhost:6379/0")
+    class Config:
+        env_file = ".env"
+        env_file_encoding = "utf-8"
 
-# Additional config can be added here
+settings = Settings()
