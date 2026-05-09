@@ -1,33 +1,28 @@
-# models.py (Pydantic)
-from pydantic import BaseModel, Field
+"""Pydantic models for Flight entity."""
+
 from datetime import datetime
+from pydantic import BaseModel, Field
 
 class FlightBase(BaseModel):
     flight_number: str = Field(..., example="AA123")
-    departure_airport: str = Field(..., example="JFK")
-    arrival_airport: str = Field(..., example="LAX")
+    origin: str = Field(..., example="JFK")
+    destination: str = Field(..., example="LAX")
     departure_time: datetime
     arrival_time: datetime
-    capacity: int
+    aircraft_id: int
 
 class FlightCreate(FlightBase):
     pass
 
-class Flight(FlightBase):
+class FlightUpdate(BaseModel):
+    departure_time: datetime | None = None
+    arrival_time: datetime | None = None
+
+class FlightInDBBase(FlightBase):
     id: int
+
     class Config:
         orm_mode = True
 
-# Booking models
-class BookingBase(BaseModel):
-    flight_id: int
-    passenger_name: str
-    seat_number: str
-
-class BookingCreate(BookingBase):
+class Flight(FlightInDBBase):
     pass
-
-class Booking(BookingBase):
-    id: int
-    class Config:
-        orm_mode = True

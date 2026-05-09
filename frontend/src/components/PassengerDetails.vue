@@ -1,50 +1,31 @@
 <template>
   <div class="passenger-details">
-    <h2>여객 상세 정보</h2>
-    <form @submit.prevent="submitDetails">
-      <div class="form-group">
-        <label for="name">이름</label>
-        <input type="text" id="name" v-model="details.name" required />
-      </div>
-      <div class="form-group">
-        <label for="passport">여권 번호</label>
-        <input type="text" id="passport" v-model="details.passport" required />
-      </div>
-      <div class="form-group">
-        <label for="age">나이</label>
-        <input type="number" id="age" v-model="details.age" required />
-      </div>
-      <button type="submit">저장</button>
+    <h2>여행자 정보 입력</h2>
+    <form @submit.prevent="submit">
+      <label>이름:</label>
+      <input type="text" v-model="name" required />
+      <label>연락처:</label>
+      <input type="tel" v-model="phone" required />
+      <button type="submit">완료</button>
     </form>
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue';
-import { updatePassengerDetails } from '@/services/api';
+import { ref } from 'vue'
 
-const details = ref({
-  name: '',
-  passport: '',
-  age: null
-});
+const name = ref('')
+const phone = ref('')
 
-const submitDetails = async () => {
-  try {
-    const res = await updatePassengerDetails(details.value);
-    alert('여객 정보 저장 완료');
-  } catch (e) {
-    alert('저장 실패: ' + e.message);
-  }
-};
+function submit() {
+  const passenger = { name: name.value, phone: phone.value }
+  localStorage.setItem('passenger', JSON.stringify(passenger))
+  alert('예약이 완료되었습니다!')
+}
 </script>
 
 <style scoped>
-.passenger-details {
-  max-width: 400px;
-  margin: auto;
-}
-.form-group {
-  margin-bottom: 1rem;
-}
+.passenger-details { padding: 10px; }
+label { display: block; margin-top: 10px; }
+button { margin-top: 10px; }
 </style>

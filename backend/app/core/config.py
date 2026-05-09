@@ -1,12 +1,17 @@
-# config.py
-import os
-from pydantic import BaseSettings
+"""Application configuration using Pydantic settings."""
+
+from pydantic import BaseSettings, PostgresDsn
 
 class Settings(BaseSettings):
-    DATABASE_URL: str = os.getenv("DATABASE_URL", "postgresql+asyncpg://postgres:postgres@localhost:5432/airline_db")
-    REDIS_URL: str = os.getenv("REDIS_URL", "redis://localhost:6379/0")
-    SECRET_KEY: str = os.getenv("SECRET_KEY", "supersecretkey")
-    ALGORITHM: str = "HS256"
-    ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
+    # Database URL
+    database_url: PostgresDsn
+    # Redis URL (optional, for caching)
+    redis_url: str | None = None
+    # Secret key for JWT or other auth (placeholder)
+    secret_key: str
+
+    class Config:
+        env_file = ".env"
+        env_file_encoding = "utf-8"
 
 settings = Settings()

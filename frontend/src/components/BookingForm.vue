@@ -1,50 +1,34 @@
 <template>
   <div class="booking-form">
-    <h2>예약 폼</h2>
-    <form @submit.prevent="submitBooking">
-      <div class="form-group">
-        <label for="flightId">항공편 ID</label>
-        <input type="text" id="flightId" v-model="booking.flight_id" required />
-      </div>
-      <div class="form-group">
-        <label for="seatNumber">좌석 번호</label>
-        <input type="text" id="seatNumber" v-model="booking.seat_number" required />
-      </div>
-      <div class="form-group">
-        <label for="passengerName">여객 이름</label>
-        <input type="text" id="passengerName" v-model="booking.passenger_name" required />
-      </div>
+    <h2>항공권 예약</h2>
+    <form @submit.prevent="submit">
+      <label>항공편 ID:</label>
+      <input type="text" v-model="flightId" required />
+      <label>이름:</label>
+      <input type="text" v-model="name" required />
       <button type="submit">예약하기</button>
     </form>
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue';
-import { createBooking } from '@/services/api';
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 
-const booking = ref({
-  flight_id: '',
-  seat_number: '',
-  passenger_name: ''
-});
+const flightId = ref('')
+const name = ref('')
+const router = useRouter()
 
-const submitBooking = async () => {
-  try {
-    const response = await createBooking(booking.value);
-    alert(`예약 성공: ${response.data.booking_id}`);
-  } catch (err) {
-    alert(`예약 실패: ${err.message}`);
-  }
-};
+function submit() {
+  // 간단히 예약 정보를 로컬스토리지에 저장
+  const booking = { flightId: flightId.value, name: name.value }
+  localStorage.setItem('booking', JSON.stringify(booking))
+  router.push('/passenger')
+}
 </script>
 
 <style scoped>
-.booking-form {
-  max-width: 400px;
-  margin: auto;
-}
-.form-group {
-  margin-bottom: 1rem;
-}
+.booking-form { padding: 10px; }
+label { display: block; margin-top: 10px; }
+button { margin-top: 10px; }
 </style>

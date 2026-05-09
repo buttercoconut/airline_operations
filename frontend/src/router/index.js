@@ -1,20 +1,15 @@
-
-import { createRouter, createWebHistory } from 'vue-router';
-import BookingForm from '@/components/BookingForm.vue';
-import PassengerDetails from '@/components/PassengerDetails.vue';
-import BaggageManagement from '@/components/BaggageManagement.vue';
-import MaintenanceDashboard from '@/components/MaintenanceDashboard.vue';
+import { createRouter, createWebHistory } from 'vue-router'
+import FlightSchedule from '../components/FlightSchedule.vue'
+import Booking from '../components/Booking.vue'
+import Passenger from '../components/Passenger.vue'
 
 const routes = [
-  { path: '/', component: BookingForm, name: 'Booking' },
-  { path: '/passenger', component: PassengerDetails, name: 'Passenger' },
-  { path: '/baggage', component: BaggageManagement, name: 'Baggage' },
-  { path: '/maintenance', component: MaintenanceDashboard, name: 'Maintenance' },
-];
+  { path: '/', component: FlightSchedule },
+  { path: '/booking', component: Booking },
+  { path: '/passenger', component: Passenger }
+]
 
-const router = createRouter({
+export default createRouter({
   history: createWebHistory(),
-  routes,
-});
-
-export default router;
+  routes
+})

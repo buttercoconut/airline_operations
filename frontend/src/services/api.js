@@ -1,16 +1,25 @@
-<!--
-  API 서비스 모듈
-  axios 인스턴스를 사용해 백엔드와 통신합니다.
--->
+export async function fetchFlightSchedule() {
+  const res = await fetch('/api/flights')
+  if (!res.ok) throw new Error('Failed to fetch flights')
+  return res.json()
+}
 
-import axios from 'axios';
+export async function submitBooking(booking) {
+  const res = await fetch('/api/bookings', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(booking)
+  })
+  if (!res.ok) throw new Error('Booking failed')
+  return res.json()
+}
 
-const api = axios.create({
-  baseURL: 'http://localhost:8000/api', // 실제 백엔드 URL로 교체
-  timeout: 10000,
-});
-
-export const createBooking = (data) => api.post('/bookings', data);
-export const updatePassengerDetails = (data) => api.put('/passengers', data);
-export const addBaggage = (data) => api.post('/baggage', data);
-export const fetchMaintenanceTasks = () => api.get('/maintenance/tasks');
+export async function submitPassenger(passenger) {
+  const res = await fetch('/api/passengers', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(passenger)
+  })
+  if (!res.ok) throw new Error('Passenger submission failed')
+  return res.json()
+}
